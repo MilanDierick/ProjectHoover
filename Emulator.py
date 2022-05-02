@@ -6,12 +6,20 @@ def tap_profile(emulator):
     emulator.tap(30, 30)
 
 
+def tap_copy_gov_name(emulator):
+    emulator.tap(1100, 460)
+
+
 def tap_rankings(emulator):
     emulator.tap(330, 400)
 
 
 def tap_individual_power(emulator):
     emulator.tap(250, 310)
+
+
+def tap_profile_close(emulator):
+    emulator.tap(2185, 168)
 
 
 class Emulator:
@@ -35,5 +43,3 @@ class Emulator:
 
     def screenshot(self):
         return self.device.exec_out(command='screencap -p', decode=False)
-
-
