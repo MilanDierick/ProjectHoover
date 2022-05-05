@@ -24,7 +24,7 @@ def tap_profile_close(emulator):
 
 class Emulator:
     def __init__(self):
-        self.device = AdbDeviceTcp(host='localhost', port=5555)
+        self.device = AdbDeviceTcp(host='127.0.0.1', port=5555)
 
     def connect(self):
         print('Connecting to emulator...')

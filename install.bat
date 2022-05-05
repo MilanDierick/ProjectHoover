@@ -1,0 +1,1 @@
+python -m pip install adb-shell pytesseract opencv-python numpy matplotlib pyperclip xlwt python-dateutil rsa cryptography pyasn1 packaging Pillow pyparsing kiwisolver fonttools cycler six cffi pycparser

@@ -1,65 +1,41 @@
-import time
-from datetime import date
-
-import cv2
-import pyperclip as pyperclip
 import pytesseract
-from xlwt import Workbook, XFStyle, Font
 
-from Emulator import Emulator, tap_profile, tap_rankings, tap_individual_power, tap_profile_close, tap_copy_gov_name
-from Player import Player
+from Emulator import Emulator
+from MenuDialogue import ScanParameters, print_overview, get_int_from_input
+from Scanner import Scanner
 
 pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
-Y = [450, 615, 775, 935]
+emulator = Emulator()
 
-today = date.today()
-
-wb = Workbook()
-sheet1 = wb.add_sheet(str(today))
-style = XFStyle()
-font = Font()
-font.bold = True
-style.font = font
-
-sheet1.write(0, 0, 'Governor ID', style)
-sheet1.write(0, 1, 'Governor Name', style)
-sheet1.write(0, 2, 'Alliance Tag', style)
-sheet1.write(0, 3, 'Alliance Name', style)
-sheet1.write(0, 4, 'Power', style)
-sheet1.write(0, 5, 'Kill Points', style)
-
-if __name__ == '__main__':
-    emulator = Emulator()
+def init():
     emulator.connect()
 
-    for index in range(20):
-        if index < 4:  # If we are selecting one of the first 4 players, we want use pre-defined coordinates
-            emulator.tap(460, Y[index])
-        else:
-            emulator.tap(460, 935)
 
-        time.sleep(0.5)  # Wait for the player profile to load
+def main():
+    print_overview()
+    command_value = get_int_from_input(1, 1, "Please enter a valid command number.")
 
-        with open('gov_info.png', 'wb') as screenshot:
-            screenshot.write(emulator.screenshot())
+    if command_value == 1:
+        scan_parameters = ScanParameters()
 
-        image = cv2.imread('gov_info.png')
+        scan_parameters.scan_mode = get_int_from_input(1, 1, "Please enter a valid scan mode: ")
+        scan_parameters.scan_amount = get_int_from_input(1, 1000, "Please enter a valid amount of players to scan: ")
 
-        tap_copy_gov_name(emulator)
-        time.sleep(0.5)
+        scanner = Scanner(scan_parameters, emulator)
+        scanner.execute()
 
-        gov_name = pyperclip.paste()
+        for player in scanner.players:
+            print(player)
 
-        try:
-            player = Player(gov_name, image)
-        except:
-            player = Player(gov_name, image)
 
-        print(player)
-        player.save_to_sheet(sheet1, index)
+def cleanup():
+    pass
 
-        tap_profile_close(emulator)
-        time.sleep(0.5)
 
-    wb.save('gov_info.xls')
+if __name__ == '__main__':
+    init()
+    main()
+    cleanup()
+
+    # wb.save('gov_info.xls')
